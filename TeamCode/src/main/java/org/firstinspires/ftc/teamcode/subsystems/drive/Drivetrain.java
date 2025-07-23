@@ -612,12 +612,12 @@ public class Drivetrain {
     }
 
     // TeleOp
-    public void drive(Gamepad gamepad, boolean speciMode) {
+    public void drive(Gamepad gamepad) {
         resetMinPowersToOvercomeFriction();
         state = State.DRIVE;
 
-        double forward = smoothControls(gamepad.left_stick_y * (speciMode ? -1 : 1));
-        double strafe = smoothControls(gamepad.left_stick_x * (speciMode ? -1 : 1));
+        double forward = smoothControls(-1 * gamepad.left_stick_y);
+        double strafe = smoothControls(-1 * gamepad.left_stick_x);
         double turn = smoothControls(-gamepad.right_stick_x);
 
         if (intakeDriveMode) {

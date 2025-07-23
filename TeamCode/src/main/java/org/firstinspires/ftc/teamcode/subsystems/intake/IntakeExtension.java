@@ -40,7 +40,7 @@ public class IntakeExtension {
 
         m = robot.hardwareMap.get(DcMotorEx.class, "intakeExtensionMotor");
 
-        extendoMotor = new PriorityMotor(new DcMotorEx[] {m}, "intakeExtensionMotor", 3, 5, new double[] {1}, robot.sensors);
+        extendoMotor = new PriorityMotor(new DcMotorEx[] {m}, "intakeExtensionMotor", 3, 5, new double[] {-1}, robot.sensors);
         robot.hardwareQueue.addDevice(extendoMotor);
     }
 
