@@ -30,7 +30,7 @@ public class IntakeExtension {
     public static double slidesDeadZone = 0.3;
     public static double slidesForceInThresh = 6;
     public static double slidesForceInPow = -0.6;
-    public static double slidesKeepInPow = -0.2;
+    public static double slidesKeepInPow = -0.4;
     public static double slidesForcePullPow = -0.7;
     private boolean forcePull = false;
     private boolean ignoreKeepIn = false;

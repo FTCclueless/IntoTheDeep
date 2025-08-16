@@ -67,7 +67,8 @@ public class DemoTeleop extends LinearOpMode {
         robot.sensors.update();
 
         robot.ndeposit.arm.setArmRotation(0.02, 1);
-        robot.nclawIntake.setExtendoTargetPos(robot.sensors.getExtendoPos() <= 4 ? robot.sensors.getExtendoPos() : 12);
+        // robot.nclawIntake.setExtendoTargetPos(robot.sensors.getExtendoPos() <= 4 ? robot.sensors.getExtendoPos() : 12);
+        robot.nclawIntake.setExtendoTargetPos(0.0);
         robot.nclawIntake.intakeTurret.setTurretArmTarget(nClawIntake.restrictedHoverAngle);
         robot.nclawIntake.intakeTurret.setTurretRotation(nClawIntake.turretTransferRotation);
         while (opModeInInit()) {
@@ -78,7 +79,7 @@ public class DemoTeleop extends LinearOpMode {
         }
         if (robot.nclawIntake.state == nClawIntake.State.TEST) robot.nclawIntake.state = nClawIntake.State.RETRACT;
         robot.nclawIntake.setTargetPose(new Pose2d(extensionPreset, 0, 0));
-        robot.nclawIntake.setAutoEnableCamera(true);
+        robot.nclawIntake.setAutoEnableCamera(false);
         robot.nclawIntake.disableRestrictedHoldPos();
 
         if (!isStopRequested()) LogUtil.init();
