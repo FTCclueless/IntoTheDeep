@@ -24,7 +24,7 @@ public class Drive extends LinearOpMode {
         }
 
         while (!isStopRequested()) {
-            robot.drivetrain.drive(gamepad1, false);
+            robot.drivetrain.drive(gamepad1);
 
             robot.update();
 

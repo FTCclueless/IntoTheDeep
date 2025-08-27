@@ -83,10 +83,10 @@ public class IntakeTurret {
     public void update() {
         intakeExtension.setTargetLength(targetLength);
         intakeExtension.update();
-        //clawRotation.setTargetAngle(clawRotationTarget);
+    }
 
-        //turretArm.setTargetAngle(turretArmTarget);
-        //turretRotation.setTargetAngle(turretRotationTarget * (48.0 / 40));
+    public void setIntakeExtension(double t) {
+        targetLength = t;
     }
 
     // Target is given in robot centric coordinates
@@ -125,10 +125,6 @@ public class IntakeTurret {
     private boolean tight = true;
     public void setTight(boolean b){
         tight = b;
-    }
-
-    public void setIntakeExtension(double t) {
-        targetLength = t;
     }
 
     public void setClawRotation(double t) {

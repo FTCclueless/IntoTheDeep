@@ -30,21 +30,21 @@ public class nClawIntake {
 
     private double intakeSetTargetPos;
 
-    // turretBufferAng -> angle that allows for any rotation to occur with the turret still inside the robot. use in any retract/extend states
+    public static double transferClawRotation = 0, turretSearchRotation = 3.165;
 
-    public static double transferClawRotation = 0;
-    public static double restrictedHoverAngle = 1.0645;
-    public static double normalHoverAngle = 0.232;
+    public static double restrictedHoverAngle = 1.0645, normalHoverAngle = 0.232, turretRetractedAngle = 2.4345, turretSearchAngle = 0.64, turretBufferStart = 1.2616, turretBufferEnd = 1.7797,turretTransferAngle = 2.4387, turretGrabAngle = -0.4557;
     public static double hoverAngle = normalHoverAngle;
-    public static double turretRetractedAngle = 2.4345, turretSearchAngle = 0.64, turretBufferStart = 1.2616, turretBufferEnd = 1.7797,turretTransferAngle = 2.4387, turretGrabAngle = -0.4557;
-    public static double turretTransferRotation = 3.165;
-    public static double minExtension = 2; // What we require before giving full range of motion
     private long hoverStart = 0;
     private long lowerStart = 0;
     public static double hoverDelay = 150;
     public static double lowerDelay = 300;
+
+    public static double turretTransferRotation = 3.165;
+
+    public static double minExtension = 2; // What we require before giving full range of motion
+
     public static double transferExtension = 0, bufferExtension = 7;
-    public static double turretSearchRotation = 3.165;
+
     public static LLBlockDetectionPostProcessor.Block visionTargetBlock = null;
     public static double dodgeAngle = 0.4;
 
@@ -123,63 +123,10 @@ public class nClawIntake {
         intakeSetTargetPos = 15;
 
         target = new Pose2d(0, 0, 0);
-//        intakeTurret.turretArm.servos[0].getController().pwmEnable();
     }
 
-    //general update for entire class
     public void update() {
         switch (state) {
-            /*case START_EXTEND:
-                // Pre-rotate the turret + claw servos
-                intakeTurret.setIntakeExtension(minExtension);
-                intakeTurret.setTurretArmTarget(turretBufferAngle);
-                intakeTurret.setTurretRotation(turretPreRotation);
-                intakeTurret.setClawRotation(0);
-
-                intakeTurret.setClawState(grab);
-
-                // Wait for extension past certain length or for the buffer ang to be reached, meaning we can full send rotation
-                if (intakeTurret.turretAngInPosition()) {
-                    //if (intakeSetTargetPos > minExtension)
-                        state = State.FULL_EXTEND;
-                    //else
-                    //    state = State.MID_EXTEND;
-                }
-                break;
-            case MID_EXTEND:
-                // Get past the side plates so if our target position is less than min extension we won't clip
-                intakeTurret.setIntakeExtension(minExtension);
-                intakeTurret.setTurretArmTarget(turretBufferAngle);
-                intakeTurret.setTurretRotation(turretPastSidePlatesRotation);
-                intakeTurret.setClawRotation(0);
-
-                if (intakeTurret.turretRotInPosition())
-                    state = State.FULL_EXTEND;
-                break;
-            case FULL_EXTEND:
-                // Fully extend + rotate to search positions
-                intakeTurret.setIntakeExtension(intakeSetTargetPos);
-                intakeTurret.setTurretArmTarget(turretSearchAngle);
-                intakeTurret.setTurretRotation(turretSearchRotation);
-                intakeTurret.setClawRotation(0);
-
-                intakeTurret.setClawState(grab);
-
-                // Wait for full extension and turret in position before starting search
-                if (intakeTurret.extendoInPosition(1.0) && intakeTurret.turretRotInPosition()) {
-                    grab = false;
-                    sampleStatus = false;
-                    if (grabMethod.useCamera) {
-                        state = State.SEARCH;
-                        robot.vision.startDetection();
-                        robot.vision.setOffset(robot.nclawIntake.getIntakeRelativeToRobot());
-                        intakeLight.setState(true);
-                    } else {
-                        hoverStart = System.currentTimeMillis();
-                        state = State.HOVER;
-                    }
-                }
-                break;*/
             case DODGE:
                 intakeTurret.setTurretArmTarget(dodgeAngle);
 
@@ -508,15 +455,19 @@ public class nClawIntake {
 
     public double getExtendoTargetPos() { return this.intakeSetTargetPos; }
     public void setExtendoTargetPos(double targetPos) {
-        this.intakeSetTargetPos = Utils.minMaxClip(targetPos, 1, IntakeExtension.maxExtendoLength);
+        this.intakeSetTargetPos = Utils.minMaxClip(targetPos, 0, IntakeExtension.maxExtendoLength);
     }
+
     public double getManualTurretAngle() { return this.manualTurretAngle; }
+
     public void setManualTurretAngle(double targetPos) {
         while (targetPos < -1.8) targetPos += 1.8 * 2;
         while (targetPos > 1.8) targetPos -= 1.8 * 2;
         this.manualTurretAngle = targetPos;
     }
+
     public double getManualClawAngle() { return this.manualClawAngle; }
+
     public void setManualClawAngle(double targetPos) {
         while (targetPos < -1.8) targetPos += 1.8 * 2;
         while (targetPos > 1.8) targetPos -= 1.8 * 2;
@@ -534,7 +485,6 @@ public class nClawIntake {
         );
     }
 
-//    public void forcePullIn() { forcePull = true; }
 
     public void updateTelemetry() {
         TelemetryUtil.packet.put("Intake : clawRotation angle", intakeTurret.getClawRotation());
@@ -546,18 +496,11 @@ public class nClawIntake {
         TelemetryUtil.packet.put("Intake : sampleStatus", sampleStatus);
         TelemetryUtil.packet.put("Intake : retryCounter", retryCounter);
         TelemetryUtil.packet.put("Intake : state", this.state);
-        TelemetryUtil.packet.put("intakeState", this.state);
-        LogUtil.intakeState.set(this.state.toString());
         TelemetryUtil.packet.put("Intake : Target X", target.x);
         TelemetryUtil.packet.put("Intake : Target Y", target.y);
         TelemetryUtil.packet.put("Intake : Target Heading", target.heading);
         TelemetryUtil.packet.put("Intake : visionTargetBlock", visionTargetBlock);
-        //TelemetryUtil.packet.put("Intake | arm target", intakeTurret.turretArm.getTargetAngle());
-        //TelemetryUtil.packet.put("Intake | arm inPosition", intakeTurret.turretAngInPosition());
-        //TelemetryUtil.packet.put("Intake | turret target", intakeTurret.turretRotation.getTargetAngle());
-        //TelemetryUtil.packet.put("Intake | turret inPosition", intakeTurret.turretRotInPosition());
-        //TelemetryUtil.packet.put("Intake | claw target", intakeTurret.clawRotation.getTargetAngle());
-        //TelemetryUtil.packet.put("Intake | claw inPosition", intakeTurret.clawInPosition());
+        LogUtil.intakeState.set(this.state.toString());
     }
 
     public void setGrabMethod(GrabMethod grabMethod) {

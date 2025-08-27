@@ -30,7 +30,7 @@ public class Sensors {
 
     private int extendoEncoder;
     private int slidesNewZero = 0;
-    public static double extendoInchesPerTick = 19.0 / 467;
+    public static double extendoInchesPerTick = -18.75 / 449;
 
     private final AnalogInput[] analogEncoders = new AnalogInput[2];
     public double[] analogVoltages = new double[analogEncoders.length];
@@ -153,7 +153,7 @@ public class Sensors {
     private void updateTelemetry() {
         TelemetryUtil.packet.put("voltage", voltage);
 
-        TelemetryUtil.packet.put("Extendo : position", getExtendoPos());
+        TelemetryUtil.packet.put("Extendo : current position", getExtendoPos());
         TelemetryUtil.packet.put("Extendo : encoder", this.extendoEncoder);
         LogUtil.extendoCurrentPos.set(getExtendoPos());
 

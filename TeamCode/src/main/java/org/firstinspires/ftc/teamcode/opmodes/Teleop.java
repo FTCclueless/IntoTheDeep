@@ -219,7 +219,7 @@ public class Teleop extends LinearOpMode {
 
             // Driving
             robot.drivetrain.intakeDriveMode = intakeMode;
-            robot.drivetrain.drive(gamepad1, speciMode);
+            robot.drivetrain.drive(gamepad1);
 
             // Toggle Alliance
             //if (x_2.isClicked(gamepad2.x)) Globals.isRed = !Globals.isRed;

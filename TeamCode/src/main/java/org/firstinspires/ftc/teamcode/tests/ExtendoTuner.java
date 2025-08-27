@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.utils.TelemetryUtil;
 @Config
 public class ExtendoTuner extends LinearOpMode {
     public static double targetLength = 0.0;
-
+    public static boolean encoderTest = false;
     public void runOpMode(){
         Robot robot = new Robot(hardwareMap);
         robot.nclawIntake.state = nClawIntake.State.TEST;
@@ -25,7 +25,12 @@ public class ExtendoTuner extends LinearOpMode {
         while (!isStopRequested()) {
             robot.nclawIntake.intakeTurret.setTurretArmTarget(nClawIntake.turretSearchAngle);
             robot.nclawIntake.intakeTurret.setTurretRotation(nClawIntake.turretSearchRotation);
-            robot.nclawIntake.setExtendoTargetPos(targetLength);
+
+            if(!encoderTest){
+                robot.nclawIntake.setExtendoTargetPos(targetLength);
+            }else{
+                robot.nclawIntake.intakeTurret.intakeExtension.extendoMotor.setPowerForced(0);
+            }
 
             //TelemetryUtil.packet.put("Extendo Target", robot.nclawIntake.getExtendoTargetPos());
             //TelemetryUtil.packet.put("Extendo Current Pos", robot.sensors.getExtendoPos());

@@ -24,7 +24,7 @@ public class IntakeExtension {
 
     private double extendoCurrentPos = 0.0;
     private double targetLength = 0.0;
-    public static PID extendoPID = new PID(0.4, 0.1, 0.007);
+    public static PID extendoPID = new PID(0.42, 0, 0.006);
     public static double minPow = 0.1;
     public static double slidesTolerance = 0.7;
     public static double slidesDeadZone = 0.3;
@@ -50,23 +50,35 @@ public class IntakeExtension {
         double pow = 0;
 
         if (Globals.TESTING_DISABLE_CONTROL && Globals.RUNMODE == RunMode.TESTER) {
+            Log.i("James", "disable control, why is this active we disabled it");
             extendoPID.update(0, -1.0, 1.0);
             extendoPID.resetIntegral();
             extendoMotor.setTargetPower(0.0);
         } else {
             if (this.inPosition(slidesDeadZone)) {
+                Log.i("James", "dead zone clip, why is this active we disabled it");
+
                 extendoPID.update(0, -1.0, 1.0);
                 extendoPID.resetIntegral();
                 pow = 0;
             } else {
+                Log.i("James", "normal, so the PID is issue?");
+
                 pow = extendoPID.update(this.targetLength - this.extendoCurrentPos, -0.7, 0.7);
                 if (Math.abs(pow) < minPow) pow = minPow * Math.signum(pow);
             }
 
-            if (targetLength == 0 && extendoCurrentPos <= slidesForceInThresh && !ignoreKeepIn) pow = slidesForceInPow;
-            if (targetLength == 0 && extendoCurrentPos <= 0.75 && !ignoreKeepIn) pow = slidesKeepInPow;
+            if (targetLength == 0 && extendoCurrentPos <= slidesForceInThresh && !ignoreKeepIn){
+                Log.i("James", "baller 1");
+                pow = slidesForceInPow;
+            }
+            if (targetLength == 0 && extendoCurrentPos <= 0.75 && !ignoreKeepIn) {
+                Log.i("James", "baller 2");
+                pow = slidesKeepInPow;
+            }
 
             if (forcePull) {
+                Log.i("James", "baller 3");
                 pow = slidesForcePullPow;
                 forcePull = false;
             }
@@ -76,7 +88,6 @@ public class IntakeExtension {
 
         TelemetryUtil.packet.put("Extendo Power", pow);
         TelemetryUtil.packet.put("Extendo Target", targetLength);
-        TelemetryUtil.packet.put("extendoTargetPos", targetLength);
         LogUtil.extendoTargetPos.set(targetLength);
         //TelemetryUtil.packet.put("Extendo Current Length", extendoCurrentPos);
         TelemetryUtil.packet.put("Extendo inPosition", this.inPosition());

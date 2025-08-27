@@ -122,7 +122,7 @@ public class IntakeWithLL extends LinearOpMode {
             }*/
 
             //robot.nclawIntake.setIntakeLength(extensionLength);
-            robot.drivetrain.drive(gamepad1, false);
+            robot.drivetrain.drive(gamepad1);
 
             robot.update();
         }

@@ -48,36 +48,41 @@ public class DemoTeleop extends LinearOpMode {
         ButtonToggle rsb_1 = new ButtonToggle();
 
         //Gamepad 2
-        //ButtonToggle x_2 = new ButtonToggle();
         ButtonToggle b_2 = new ButtonToggle();
 
-        final double triggerThresh = 0.2;
         final double triggerHardThresh = 0.7;
-        //double turretAngle = 0;
-        //double clawAngle = 0;
         boolean speciMode = false;
         boolean intakeMode = false;
         boolean high = true;
         boolean autoGrab = false;
-        boolean forceBrakePad = false;
-        boolean manualBrake = false;
 
         final double opmodeStart = System.currentTimeMillis();
 
         robot.sensors.update();
 
         robot.ndeposit.arm.setArmRotation(0.02, 1);
-        // robot.nclawIntake.setExtendoTargetPos(robot.sensors.getExtendoPos() <= 4 ? robot.sensors.getExtendoPos() : 12);
+
         robot.nclawIntake.setExtendoTargetPos(0.0);
         robot.nclawIntake.intakeTurret.setTurretArmTarget(nClawIntake.restrictedHoverAngle);
         robot.nclawIntake.intakeTurret.setTurretRotation(nClawIntake.turretTransferRotation);
+
         while (opModeInInit()) {
-            if (System.currentTimeMillis() < opmodeStart + transitionDelay) robot.nclawIntake.state = nClawIntake.State.TEST;
-            else if (robot.nclawIntake.state == nClawIntake.State.TEST) robot.nclawIntake.state = nClawIntake.State.RETRACT;
+            if (System.currentTimeMillis() < opmodeStart + transitionDelay){
+                robot.nclawIntake.state = nClawIntake.State.TEST;
+            }
+            else if (robot.nclawIntake.state == nClawIntake.State.TEST){
+                robot.nclawIntake.state = nClawIntake.State.RETRACT;
+            }
+
             robot.ndeposit.presetDepositHeight(speciMode, high, false);
+            robot.drivetrain.setBrakePad(false);
             robot.update();
         }
-        if (robot.nclawIntake.state == nClawIntake.State.TEST) robot.nclawIntake.state = nClawIntake.State.RETRACT;
+
+        if (robot.nclawIntake.state == nClawIntake.State.TEST) {
+            robot.nclawIntake.state = nClawIntake.State.RETRACT;
+        }
+
         robot.nclawIntake.setTargetPose(new Pose2d(extensionPreset, 0, 0));
         robot.nclawIntake.setAutoEnableCamera(false);
         robot.nclawIntake.disableRestrictedHoldPos();
