@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.sensors.Sensors;
-import org.firstinspires.ftc.teamcode.utils.priority.PriorityServo;
 import org.firstinspires.ftc.teamcode.utils.priority.nPriorityServo;
 
 @Config
@@ -16,7 +15,7 @@ public class Arm {
     public final nPriorityServo clawRotation;
     public final nPriorityServo claw;
 
-    public static double openRad = 1.2456, closeRad = 0.10, closeLooseRad = 0.25;
+    public static double openRad = 1.2456, closeRad = 0.01, closeLooseRad = 0.15;
 
     public Arm(Robot robot) {
         this.sensors = robot.sensors;
@@ -51,9 +50,9 @@ public class Arm {
                 new Servo[] {robot.hardwareMap.get(Servo.class, "depositClaw")},
                 "depositClaw",
                 nPriorityServo.ServoType.AXON_MINI,
-                0.028,
-                0.238,
-                0,
+                0.01,
+                0.24,
+                0.02,
                 new boolean[] {false},
                 1.0,
                 2.0

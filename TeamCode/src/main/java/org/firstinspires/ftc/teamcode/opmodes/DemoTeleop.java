@@ -40,21 +40,15 @@ public class DemoTeleop extends LinearOpMode {
         // Gamepad 1
         ButtonToggle lb_1 = new ButtonToggle();
         ButtonToggle rb_1 = new ButtonToggle();
-        ButtonToggle a_1 = new ButtonToggle();
         ButtonToggle b_1 = new ButtonToggle();
         ButtonToggle x_1 = new ButtonToggle();
-        ButtonToggle y_1 = new ButtonToggle();
         ButtonToggle lsb_1 = new ButtonToggle();
         ButtonToggle rsb_1 = new ButtonToggle();
-
-        //Gamepad 2
-        ButtonToggle b_2 = new ButtonToggle();
 
         final double triggerHardThresh = 0.7;
         boolean speciMode = false;
         boolean intakeMode = false;
         boolean high = true;
-        boolean autoGrab = false;
 
         final double opmodeStart = System.currentTimeMillis();
 
@@ -93,13 +87,9 @@ public class DemoTeleop extends LinearOpMode {
         while (!isStopRequested()) {
             robot.update();
 
-            if (autoGrab) {
-                robot.nclawIntake.setGrabMethod(nClawIntake.GrabMethod.AUTOGRAB);
-                robot.nclawIntake.setTargetType(nClawIntake.Target.RELATIVE);
-            } else {
-                robot.nclawIntake.setGrabMethod(nClawIntake.GrabMethod.MANUAL_AIM);
-                robot.nclawIntake.setTargetType(nClawIntake.Target.RELATIVE);
-            }
+            robot.nclawIntake.setGrabMethod(nClawIntake.GrabMethod.MANUAL_AIM);
+            robot.nclawIntake.setTargetType(nClawIntake.Target.RELATIVE);
+
             robot.nclawIntake.setRetryGrab(false);
 
             if (x_1.isClicked(gamepad1.x)) {
@@ -114,11 +104,6 @@ public class DemoTeleop extends LinearOpMode {
                 robot.ndeposit.presetDepositHeight(speciMode, high, false);
             }
 
-            if (y_1.isClicked(gamepad1.y)) {
-                autoGrab = !autoGrab;
-                if (autoGrab) gamepad1.rumble(200);
-                else gamepad1.rumble(100);
-            }
             if (lsb_1.isClicked(gamepad1.left_stick_button)) {
                 if (robot.ndeposit.holdSlides) {
                     robot.ndeposit.holdSlides = false;
@@ -184,7 +169,7 @@ public class DemoTeleop extends LinearOpMode {
                 if (rb_1.isClicked(gamepad1.right_bumper)) {
                     if (robot.ndeposit.state == nDeposit.State.SPECIMEN_INTAKE_WAIT) robot.ndeposit.returnToIdle();
                     else if (robot.ndeposit.isHolding()) robot.ndeposit.deposit();
-                    else {
+                    else if (robot.nclawIntake.state == nClawIntake.State.TRANSFER_WAIT) {
                         robot.ndeposit.startSampleDeposit();
                         robot.nclawIntake.finishTransfer();
                         robot.ndeposit.finishTransfer();
